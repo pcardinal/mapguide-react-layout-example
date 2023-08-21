@@ -16,6 +16,9 @@ import SampleLayoutTemplate from "./templates/sample-template";
 // These are our custom components
 import DemoComponent from "./components/demo";
 import MessagesComponent from "./components/messages";
+import MultiZonesComponent from "./components/multizones";
+
+/*import  SelectProjCarte from "./components/select_proj_carte";*/
 
 import {
     bootstrap,
@@ -41,6 +44,7 @@ import {
     initMapGuideCommands,
     DefaultComponentNames,
     MapGuideMapProviderContext,
+    //useMapProviderContext,
     MapProviderContextProvider,
     MapViewer
 } from "mapguide-react-layout";
@@ -121,6 +125,11 @@ registerComponentFactory(DefaultComponentNames.Map, (props) => <MapProviderConte
 //     the URL of component://DemoComponent and running the command will render the DemoComponent into the TaskPane or new window
 registerComponentFactory("DemoComponent", () => <DemoComponent />);
 registerComponentFactory("MessagesComponent", () => <MessagesComponent />);
+//registerComponentFactory("MultiZonesComponent", (props) => <MultiZonesComponent {...props} />);
+registerComponentFactory("MultiZonesComponent", () => <MultiZonesComponent />);
+
+/*registerComponentFactory("SelectProjCarte", () => <SelectProjCarte/>);*/
+
 
 // Registers a custom script command. This is the InvokeScript replacement. An InvokeScript command of a Web Layout or
 // Application Definition will invoke this command if it has the same name. This viewer ignores any script content defined
@@ -134,9 +143,11 @@ registerCommand("ViewAsKml", {
     //This function controls whether the command is in a "selected" state, since this command
     //has no such notion, it always returns false
     selected: () => false,
+
     //This function controls whether the command is enabled. CommandConditions is a helper class
     //that provides common conditions where a command could be enabled/disabled
     enabled: CommandConditions.isNotBusy,
+    
     //This function is invoked when the command (referenced in a toolbar or menu) is clicked.
     //
     //It receives 4 parameters:
