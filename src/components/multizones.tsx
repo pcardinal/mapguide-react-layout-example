@@ -3,9 +3,18 @@ import { connect } from "react-redux";
 import { ReduxDispatch, IApplicationState } from "mapguide-react-layout/lib/api/common";
 import { CoordinateTrackerContainer } from "mapguide-react-layout/lib/containers/coordinate-tracker"; //pc
 import { SelectMultiZones } from "./select_multi_zones";
+import { NumeroZone } from "./numero_zone";
 import { useActiveMapProjection, useActiveMapState } from 'mapguide-react-layout/lib/containers/hooks-mapguide';
 import { useCurrentMouseCoordinates, useActiveMapName } from 'mapguide-react-layout/lib/containers/hooks';
 import * as olProj from "ol/proj";
+import Stroke from 'ol/style/Stroke.js';
+import Style from 'ol/style/Style.js';
+import getPixelFromCoordinate from 'ol/Map';
+
+import Fill from 'ol/style/Fill.js';
+import { getViewer } from 'mapguide-react-layout/lib/api/runtime'
+import { MouseTrackingTooltip } from 'mapguide-react-layout/lib/components/tooltips/mouse'
+import { FeatureQueryTooltip } from 'mapguide-react-layout/lib/components/tooltips/feature'
 //import * as MapActions from "mapguide-react-layout/lib/actions/map";
 //import { ICustomApplicationState } from "../reducers/multizones";
 
@@ -31,81 +40,54 @@ function mapStateToProps(state: Readonly<IApplicationState>): Partial<IMultiZone
 const MultiZonesComponent = (props: any) => {
     const [mz, setMZ] = React.useState("0");
 
-    let map_name: any = useActiveMapName();
-    if (((window as any)[map_name]) !== mz) {
-        if ((window as any)[map_name] == undefined) (window as any)[map_name] = "0";
-        setMZ((window as any)[map_name]);
+    let mapName: any = useActiveMapName();
+    if (((window as any)[mapName]) !== mz) {
+        if ((window as any)[mapName] == undefined) (window as any)[mapName] = "0";
+        setMZ((window as any)[mapName]);
     }
 
 
     const onNewMultiZonesHandler = (mz: any) => {
         setMZ(mz);
-        (window as any)[map_name] = mz;
+        (window as any)[mapName] = mz;
     };
 
+    //let proj: any;
+    let mapProj: any = useActiveMapProjection();  //projection par defaut
+
+    const viewer: any = getViewer();
+
+    let selected: any = null;
     let proj: any;
-    proj = useActiveMapProjection();  //projection par defaut
+    const mouseXY: any = useCurrentMouseCoordinates();
 
-    const mousexy: any = useCurrentMouseCoordinates();
-
-    switch (mz) {
-        case "0":
-            //setProjMap(useActiveMapProjection());
-            //proj_prec[0] = proj;
-            break;
-        case "1":
-
-            let mousex;
-            let mousey;
-
-            // calculer la position de la souris par rapport aux zones
-            // MTM (SCRS) Québec
-            if (proj == "EPSG:4326") {
-                mousex = mousexy[0];
-                mousey = mousexy[1];
-            } else {
-                let mouseproj = olProj.transform(mousexy, proj, "EPSG:4326")
-                mousex = mouseproj[0];
-                mousey = mouseproj[1];
-            }
-
-
-            if ((parseInt(mousex) <= -57) && (parseInt(mousex) >= -81) && (parseInt(mousey) > 30) && (parseInt(mousey) < 70)) {
-                let zone = Math.trunc((Math.abs(parseInt(mousex)) - 57) / 3) + 3;
-
-                switch (zone) {
-                    case 1:
-                        //setProjMap("EPSG:26898");
-                        //proj_prec[0] =
-                        proj = "EPSG:26898";
-
-                        break;
-                    case 2:
-                        //setProjMap("EPSG:26899");
-                        //proj_prec[0] =
-                        proj = "EPSG:26899";
-                        break;
-                    default:
-                        //setProjMap("EPSG:29" + (42 + zone)); // 2945 à 2952
-                        //proj_prec[0] = 
-                        proj = "EPSG:29" + (42 + zone); // 2945 à 2952
-                }
-
-                //setProjMap(proj);
-            }
-
-            break;
-
-        default:
-
+    if (mouseXY) {
+        let pix = viewer._map.getPixelFromCoordinate(mouseXY);
+        viewer._map.forEachFeatureAtPixel(pix, function (feature: any) {
+            //setSelected(f);
+            //selected = f;
+            //selectStyle.getFill().setColor(f.get('COLOR') || '#eeeeee');
+            //f.setStyle(selectStyle);
+            proj = feature.id_;
+            //return true;
+        });
     }
+    
+    /*
+    if (selected) {
+        //status.innerHTML = selected.get('ECO_NAME');
+        proj = selected.id_;
+        //setProj(selected.id_)
+    }
+*/
 
-
-
+    let zone;
+    let x = 1;
 
     return <div>
-        <SelectMultiZones mz={mz} map_proj={proj} map_name={map_name} onNewMZ={onNewMultiZonesHandler} />
+        <SelectMultiZones mz={mz} mapProj={mapProj} mapName={mapName} onNewMZ={onNewMultiZonesHandler} />
         <CoordinateTrackerContainer projections={[proj]} />
+        <NumeroZone zone={zone} />
     </div>;
 
 };

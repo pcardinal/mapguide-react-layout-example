@@ -34,7 +34,15 @@
       </Item>
       <Item xsi:type="WidgetItemType">
         <Function>Widget</Function>
+        <Widget>multizonesComponent</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
         <Widget>ViewAsKml</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>AddManageLayers</Widget>
       </Item>
       <Item xsi:type="WidgetItemType">
         <Function>Widget</Function>
@@ -365,6 +373,10 @@
         <Function>Widget</Function>
         <Widget>Redline</Widget>
       </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>CoordinateTracker</Widget>
+      </Item>
     </Container>
     <MapWidget>
       <Name>Map</Name>
@@ -459,22 +471,6 @@
       <ImageClass />
       <Label>Color picker</Label>
       <Tooltip>Use this tool to select a color</Tooltip>
-      <StatusText />
-      <Disabled>false</Disabled>
-    </Widget>
-    <Widget xsi:type="UiWidgetType">
-      <Name>CoordinateTracker</Name>
-      <Type>CoordinateTracker</Type>
-      <Location />
-      <Extension>
-        <Target>TaskPane</Target>
-        <Projection>
-        </Projection>
-      </Extension>
-      <ImageUrl>images/icons.png</ImageUrl>
-      <ImageClass>coordinate-tracker</ImageClass>
-      <Label>Coordinate Tracker</Label>
-      <Tooltip>Click to view mouse coordinates in various projections</Tooltip>
       <StatusText />
       <Disabled>false</Disabled>
     </Widget>
@@ -1345,6 +1341,57 @@
       <ImageUrl />
       <ImageClass />
       <Label>View as KML</Label>
+      <Tooltip />
+      <StatusText />
+      <Disabled>false</Disabled>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>multizonesComponent</Name>
+      <Type>InvokeURL</Type>
+      <Location />
+      <Extension>
+        <Target>InvokeUrlWindow</Target>
+        <Url>component://MultiZonesComponent</Url>
+        <DisableIfSelectionEmpty>false</DisableIfSelectionEmpty>
+        <AdditionalParameter />
+      </Extension>
+      <ImageUrl />
+      <ImageClass />
+      <Label>Multi zones</Label>
+      <Tooltip />
+      <StatusText />
+      <Disabled>false</Disabled>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>CoordinateTracker</Name>
+      <Type>CoordinateTracker</Type>
+      <Location />
+      <Extension>
+        <Target>TaskPane</Target>
+        <Url>component://CoordinateTracker?projections=EPSG:3857&amp;projections=EPSG:4326</Url>
+        <DisableIfSelectionEmpty>false</DisableIfSelectionEmpty>
+        <AdditionalParameter />
+      </Extension>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>coordinate-tracker</ImageClass>
+      <Label>Coordinate Tracker</Label>
+      <Tooltip>Click to view mouse coordinates in various projections</Tooltip>
+      <StatusText />
+      <Disabled>false</Disabled>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>AddManageLayers</Name>
+      <Type>InvokeURL</Type>
+      <Location />
+      <Extension>
+        <Target>InvokeUrlWindow</Target>
+        <Url>component://AddManageLayers</Url>
+        <DisableIfSelectionEmpty>false</DisableIfSelectionEmpty>
+        <AdditionalParameter />
+      </Extension>
+      <ImageUrl />
+      <ImageClass />
+      <Label>AddManageLayers</Label>
       <Tooltip />
       <StatusText />
       <Disabled>false</Disabled>
