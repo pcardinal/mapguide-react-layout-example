@@ -2,9 +2,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { ReduxDispatch, IApplicationState, } from "mapguide-react-layout/lib/api/common";
 
-import { useActiveMapProjection, useActiveMapState } from 'mapguide-react-layout/lib/containers/hooks-mapguide';
-import { useCurrentMouseCoordinates, useActiveMapName } from 'mapguide-react-layout/lib/containers/hooks';
-import * as olCoordinate from 'ol/coordinate';
 import { getViewer } from 'mapguide-react-layout/lib/api/runtime'
 import Feature from 'ol/Feature';
 import LineString from 'ol/geom/LineString';
@@ -67,11 +64,12 @@ class Zone {
 		});
 
 
+		// EPSG de base utilisé pou l'ensemble des multizones
 		if (!(this.mapProj == "EPSG:4326")) {
 			feature.values_.geometry.transform("EPSG:4326", this.mapProj);
 		}
 
-		feature.set("zone", this.zone)
+		feature.set("idZone", this.zone); // feature.get("idZone") 
 		feature.setId(this.codeEPSG);
 		feature.setStyle(style);
 		couche.values_.source.addFeature(feature);
@@ -107,8 +105,7 @@ export const SelectMultiZones = (props: any) => {
 				viewer.getLayerSetGroup(props.mapName).scratchLayer.values_.source.clear();
 				break;
 			case "1":
-				//Québec MTM NAD83(CSRS)     44 sud, 65 nord
-
+				//Québec MTM NAD83(CSRS)    
 				viewer.getLayerSetGroup(props.mapName).scratchLayer.values_.source.clear();
 
 				const zone3 = new Zone(-60.0000, 50.1000, -57.1000, 52.0000, props.mapProj, "EPSG:2945", "3");
@@ -123,28 +120,17 @@ export const SelectMultiZones = (props: any) => {
 				const zone6 = new Zone(-69.0000, 47.1000, -66.0000, 59.1000, props.mapProj, "EPSG:2948", "6");
 				zone6.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
 
+				const zone7 = new Zone(-72.0000, 44.9900, -69.0000, 61.9000, props.mapProj, "EPSG:2949", "7");
+				zone7.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
 
+				const zone8 = new Zone(-75.0000, 44.9900, -72.0000, 62.5600, props.mapProj, "EPSG:2950", "8");
+				zone8.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
 
+				const zone9 = new Zone(-78.0000, 45.2800, -75.0000, 62.5600, props.mapProj, "EPSG:2951", "9");
+				zone9.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
 
-
-
-
-
-/*
-				for (i = -57; i >= -81; i = i - 3) {
-
-					const feature: any = new Feature({
-						geometry: new LineString([[i, 44], [i, 65]]),
-					});
-
-					if (!(props.mapProj == "EPSG:4326")) {
-						feature.values_.geometry.transform("EPSG:4326", props.mapProj);
-					}
-
-					feature.setStyle(style);
-					viewer.getLayerSetGroup(props.mapName).scratchLayer.values_.source.addFeature(feature);
-				}
-*/
+				const zone10 = new Zone(-79.7600, 46.1300, -78.0000, 62.5000, props.mapProj, "EPSG:2952", "10");
+				zone10.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
 
 
 				if (!proj4.defs[`EPSG:2945`]) {
@@ -208,7 +194,32 @@ export const SelectMultiZones = (props: any) => {
 			case "2":
 				//Canada UTM NAD83(CSRS)
 				viewer.getLayerSetGroup(props.mapName).scratchLayer.values_.source.clear();
-
+				/*
+								const zone3 = new Zone(-60.0000, 50.1000, -57.1000, 52.0000, props.mapProj, "EPSG:2945", "3");
+								zone3.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone4 = new Zone(-63.0000, 47.1300, -60.0000, 52.0000, props.mapProj, "EPSG:2946", "4");
+								zone4.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone5 = new Zone(-66.0000, 47.8800, -63.0000, 60.5200, props.mapProj, "EPSG:2947", "5");
+								zone5.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone6 = new Zone(-69.0000, 47.1000, -66.0000, 59.1000, props.mapProj, "EPSG:2948", "6");
+								zone6.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone7 = new Zone(-72.0000, 44.9900, -69.0000, 61.9000, props.mapProj, "EPSG:2949", "7");
+								zone7.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone8 = new Zone(-75.0000, 44.9900, -72.0000, 62.5600, props.mapProj, "EPSG:2950", "8");
+								zone8.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone9 = new Zone(-78.0000, 45.2800, -75.0000, 62.5600, props.mapProj, "EPSG:2951", "9");
+								zone9.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+								const zone10 = new Zone(-79.7600, 46.1300, -78.0000, 62.5000, props.mapProj, "EPSG:2952", "10");
+								zone10.drawZone(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+				
+				*/
 				for (i = -57; i >= -81; i = i - 3) {
 					const feature: any = new Feature({
 						geometry: new LineString([[i, 44], [i, 65]]),

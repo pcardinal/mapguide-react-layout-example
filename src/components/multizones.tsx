@@ -6,17 +6,8 @@ import { SelectMultiZones } from "./select_multi_zones";
 import { NumeroZone } from "./numero_zone";
 import { useActiveMapProjection, useActiveMapState } from 'mapguide-react-layout/lib/containers/hooks-mapguide';
 import { useCurrentMouseCoordinates, useActiveMapName } from 'mapguide-react-layout/lib/containers/hooks';
-import * as olProj from "ol/proj";
-import Stroke from 'ol/style/Stroke.js';
-import Style from 'ol/style/Style.js';
-import getPixelFromCoordinate from 'ol/Map';
 
-import Fill from 'ol/style/Fill.js';
 import { getViewer } from 'mapguide-react-layout/lib/api/runtime'
-import { MouseTrackingTooltip } from 'mapguide-react-layout/lib/components/tooltips/mouse'
-import { FeatureQueryTooltip } from 'mapguide-react-layout/lib/components/tooltips/feature'
-//import * as MapActions from "mapguide-react-layout/lib/actions/map";
-//import { ICustomApplicationState } from "../reducers/multizones";
 
 
 export interface IMultiZonesComponentOwnProps { }
@@ -27,13 +18,11 @@ export type MultiZonesComponentProps = Partial<IMultiZonesComponentOwnProps> & P
 
 function mapDispatchToProps(dispatch: ReduxDispatch): Partial<IMultiZonesComponentDispatch> {
     return {
-
     };
 }
 
 function mapStateToProps(state: Readonly<IApplicationState>): Partial<IMultiZonesComponentProps> {
     return {
-
     };
 }
 
@@ -46,43 +35,25 @@ const MultiZonesComponent = (props: any) => {
         setMZ((window as any)[mapName]);
     }
 
-
     const onNewMultiZonesHandler = (mz: any) => {
         setMZ(mz);
         (window as any)[mapName] = mz;
     };
 
-    //let proj: any;
-    let mapProj: any = useActiveMapProjection();  //projection par defaut
-
     const viewer: any = getViewer();
-
-    let selected: any = null;
-    let proj: any;
+    let proj: any = useActiveMapProjection();  //projection de la carte active 
+    let zone;
+    let mapProj = proj; 
     const mouseXY: any = useCurrentMouseCoordinates();
 
     if (mouseXY) {
-        let pix = viewer._map.getPixelFromCoordinate(mouseXY);
+        let pix = viewer._map.getPixelFromCoordinate(mouseXY); // pixel du feature sous la souris
         viewer._map.forEachFeatureAtPixel(pix, function (feature: any) {
-            //setSelected(f);
-            //selected = f;
-            //selectStyle.getFill().setColor(f.get('COLOR') || '#eeeeee');
-            //f.setStyle(selectStyle);
-            proj = feature.id_;
-            //return true;
+            proj = feature.getId();
+            zone = feature.get("idZone"); 
         });
     }
     
-    /*
-    if (selected) {
-        //status.innerHTML = selected.get('ECO_NAME');
-        proj = selected.id_;
-        //setProj(selected.id_)
-    }
-*/
-
-    let zone;
-    let x = 1;
 
     return <div>
         <SelectMultiZones mz={mz} mapProj={mapProj} mapName={mapName} onNewMZ={onNewMultiZonesHandler} />
