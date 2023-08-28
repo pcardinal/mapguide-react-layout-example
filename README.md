@@ -1,4 +1,4 @@
-# multizones
+# multizones (mapguide-react-layout-example)
 
 Ce composant permet d'afficher les zones d'une région du monde et les coordonnées de la souris relatives à une zone pointée. Il est ajouté à mapguide-react-layout-example utilitisant le module du visualisateur mapguide-react-layout.
 
