@@ -5,6 +5,7 @@ Ce composant permet d'afficher les zones d'une région du monde et les coordonn�
 ![image](https://github.com/pcardinal/multizones/assets/30451003/297ccf6b-2f0c-4262-8a35-d7037bffd567)
 
 
+- Les données des zones proviennents du site [https://spatialreference.org/](https://spatialreference.org/)
 
 
 
