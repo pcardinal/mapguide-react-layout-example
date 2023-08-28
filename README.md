@@ -1,5 +1,6 @@
 # multizones
 
+
 ![image](https://github.com/pcardinal/multizones/assets/30451003/297ccf6b-2f0c-4262-8a35-d7037bffd567)
 
 
@@ -46,16 +47,3 @@ This custom viewer bundle uses the [mapguide-react-layout npm module](https://ww
  5. Launch the custom viewer bundle using the sample template:
     * `http://servername/mapguide/sample/sample_template.html?resource=Library://Samples/Sheboygan/FlexibleLayouts/React.ApplicationDefinition`
 
-## Features demonstrated in this example
-
- * Consuming `mapguide-react-layout` as a npm module
- * Using a modern web frontend development setup with:
-   * React
-   * TypeScript
-   * Webpack
- * Loading the viewer in a custom viewer template `sample_template.html`
- * The `View as KML` custom script command
- * Sub-classing `ApplicationViewModel` to register custom redux reducer functions for custom redux application state (messages)
- * The `Demo Component` InvokeURL using the `component://` pseudo-URI scheme to load the custom demo component into the Task Pane
-    * Use of custom redux actions to push messages to a custom application state branch
- * The `Message Component` which displays messages from the custom application state branch
