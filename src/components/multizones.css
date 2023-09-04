@@ -1,0 +1,28 @@
+/*select_multi_zones*/
+.selMZ {
+  display: flex;
+  /*background-color: #2a2a2a;*/
+  /*color: red;*/
+  font-weight: bold;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+/* numero_zone*/
+.noZone {
+  display: flex;
+  /*background-color: #2a2a2a;*/
+  font-weight: bold;
+  top: 5;
+  border: 5;
+  margin: 0 1rem;
+}
+
+.zoomToMZ {
+  display: flex;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}

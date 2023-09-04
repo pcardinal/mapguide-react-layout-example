@@ -1,15 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { ReduxDispatch, IApplicationState } from "mapguide-react-layout/lib/api/common";
+import { ReduxDispatch, IApplicationState, Coordinate2D } from "mapguide-react-layout/lib/api/common";
 import { CoordinateTrackerContainer } from "mapguide-react-layout/lib/containers/coordinate-tracker"; //pc
+import { useActiveMapProjection } from 'mapguide-react-layout/lib/containers/hooks-mapguide';
+import { useCurrentMouseCoordinates, useActiveMapName } from 'mapguide-react-layout/lib/containers/hooks';
+import { getViewer } from 'mapguide-react-layout/lib/api/runtime'
+import Feature from 'ol/Feature';
 import { SelectMultiZones } from "./select_multi_zones";
 import { NumeroZone } from "./numero_zone";
-import { useActiveMapProjection, useActiveMapState } from 'mapguide-react-layout/lib/containers/hooks-mapguide';
-import { useCurrentMouseCoordinates, useActiveMapName } from 'mapguide-react-layout/lib/containers/hooks';
-
-import { getViewer } from 'mapguide-react-layout/lib/api/runtime'
-
-
+import './multizones.css';
 export interface IMultiZonesComponentOwnProps { }
 export interface IMultiZonesComponentProps { }
 export interface IMultiZonesComponentDispatch { }
@@ -18,47 +17,64 @@ export type MultiZonesComponentProps = Partial<IMultiZonesComponentOwnProps> & P
 
 function mapDispatchToProps(dispatch: ReduxDispatch): Partial<IMultiZonesComponentDispatch> {
     return {
-    };
+    }
 }
 
 function mapStateToProps(state: Readonly<IApplicationState>): Partial<IMultiZonesComponentProps> {
     return {
-    };
+    }
 }
 
-const MultiZonesComponent = (props: any) => {
+
+const MultiZonesComponent = (props: unknown) => {
+
     const [mz, setMZ] = React.useState("0");
 
-    let mapName: any = useActiveMapName();
+    let mapName = "";
+    let activeMapName = useActiveMapName();
+    if (typeof activeMapName == "string") { mapName = activeMapName }
     if (((window as any)[mapName]) !== mz) {
         if ((window as any)[mapName] == undefined) (window as any)[mapName] = "0";
         setMZ((window as any)[mapName]);
     }
 
-    const onNewMultiZonesHandler = (mz: any) => {
+    const onNewMultiZonesHandler = (mz: string) => {
         setMZ(mz);
         (window as any)[mapName] = mz;
-    };
+    }
 
+    let mapProj: string | undefined = useActiveMapProjection();  //projection de la carte active   
+    let proj = "";
+    if (mapProj) { proj = mapProj }
+
+    const mouseXY: Coordinate2D | undefined = useCurrentMouseCoordinates();
+    let zone = "";
+
+    /*let testx = useMapProviderContext();*/ //bug avec module
+    /*const viewerx: IMapViewer | undefined = getViewer();*/
     const viewer: any = getViewer();
-    let proj: any = useActiveMapProjection();  //projection de la carte active 
-    let zone;
-    let mapProj = proj; 
-    const mouseXY: any = useCurrentMouseCoordinates();
 
-    if (mouseXY) {
-        let pix = viewer._map.getPixelFromCoordinate(mouseXY); // pixel du feature sous la souris
-        viewer._map.forEachFeatureAtPixel(pix, function (feature: any) {
-            proj = feature.getId();
-            zone = feature.get("idZone"); 
+    if (mouseXY) {  // vérifier si la souris est dans view (map) sinon problème d'affichage
+        let pix: [number, number] = viewer._map.getPixelFromCoordinate(mouseXY); // pixel du feature sous la souris
+        viewer._map.forEachFeatureAtPixel(pix, function (feature: Feature) {
+            let proj_feature = feature.getId();
+            if (typeof proj_feature == "string") { proj = proj_feature }
+            zone = feature.get("idZone");
         });
     }
-    
+
+    const onZoomToMZ = () => {
+        if (mz !== "0") {
+            let layerExtent = viewer.getLayerSetGroup(mapName).scratchLayer.values_.source.getExtent();
+            viewer.getLayerSetGroup(mapName).getView().fit(layerExtent);
+        }
+    }
 
     return <div>
         <SelectMultiZones mz={mz} mapProj={mapProj} mapName={mapName} onNewMZ={onNewMultiZonesHandler} />
         <CoordinateTrackerContainer projections={[proj]} />
         <NumeroZone zone={zone} />
+        <button className="zoomToMZ" onClick={onZoomToMZ}>ZoomToMZ</button>
     </div>;
 
 };

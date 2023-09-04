@@ -2,13 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { ReduxDispatch, IApplicationState, } from "mapguide-react-layout/lib/api/common";
 
-import { getViewer } from 'mapguide-react-layout/lib/api/runtime'
-import Feature from 'ol/Feature';
-import LineString from 'ol/geom/LineString';
-import { Style, Stroke } from 'ol/Style';
-import proj4 from 'proj4';
-import { register } from 'ol/proj/proj4';
-
+import './multizones.css';
 
 export interface INumeroZoneOwnProps { }
 export interface INumeroZoneProps { }
@@ -23,9 +17,8 @@ function mapStateToProps(state: Readonly<IApplicationState>): Partial<INumeroZon
 }
 
 
-
 export const NumeroZone = (props: any) => {
-	return <div>
+	return <div className="noZone" >
 		<h3> Zone: {props.zone}</h3>
 	</div>;
 };
