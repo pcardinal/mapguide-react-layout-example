@@ -58,7 +58,7 @@ const MultiZonesComponent = (props: unknown) => {
         let pix: [number, number] = viewer._map.getPixelFromCoordinate(mouseXY); // pixel du feature sous la souris
         viewer._map.forEachFeatureAtPixel(pix, function (feature: Feature) {
             let proj_feature = feature.getId();
-            if (typeof proj_feature == "string") { proj = proj_feature }
+            if (typeof proj_feature == "string") { proj = "EPSG:" + proj_feature }
             zone = feature.get("idZone");
         });
     }

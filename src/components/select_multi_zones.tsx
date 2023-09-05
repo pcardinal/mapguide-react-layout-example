@@ -71,40 +71,44 @@ class Zone {
 
 }
 
-const style = new Style({
+const styleMZ = new Style({
 	stroke: new Stroke({ color: '#FF0000', width: 1 }),
 	fill: new Fill({
 		color: [0, 0, 0.0, 0.0]
 	})
 })
 
-
 //let xmlDoc: Document | null = null; // responseXML: Document | null selon https://microsoft.github.io/PowerBI-JavaScript/interfaces/_node_modules_typedoc_node_modules_typescript_lib_lib_dom_d_.xmlhttprequest.html#response
 let xmlDoc: Document | null;
-
-
-let tagObj: any;
-//let listMZ: HTMLCollectionOf<Element>  [];
-
+let tagObj: HTMLCollectionOf<Element>;
+let listMZ: Element[];
 let options: Object;
-if (typeof window.DOMParser != "undefined") {
-	let xmlhttp: XMLHttpRequest = new XMLHttpRequest();
-	xmlhttp.open("GET", "./dist/mz.xml", false);
-	if (xmlhttp.overrideMimeType) {
-		xmlhttp.overrideMimeType('text/xml');
-	}
-	xmlhttp.send();
-	xmlDoc = xmlhttp.responseXML;
-
-	if (xmlDoc != null) {
-		tagObj = xmlDoc.getElementsByTagName("mz"); // tag "mz" dans fichier XML
-		let listMZ: any[] = [...tagObj];
-		//const listMZ = Array.from(tagObj);
-		options = listMZ.map((op, i) => eval(`React.createElement("option", { value: "${i + 1}" }, "${op.attributes[0].nodeValue}")`))
-	}
-}
 
 export const SelectMultiZones = (props: any) => {
+
+	const [xmlIn, setXmlIn] = React.useState(true); // le fichier XML ne doit être lu qu'une seule fois lors d'une session Mapguide
+
+	if (xmlIn) {
+		if (typeof window.DOMParser != "undefined") {
+			let xmlhttp: XMLHttpRequest = new XMLHttpRequest();
+			xmlhttp.open("GET", "./resources/mz.xml", false);
+			if (xmlhttp.overrideMimeType) {
+				xmlhttp.overrideMimeType('text/xml');
+			}
+			xmlhttp.send();
+			if (xmlhttp.status !== 200) {
+				alert("Fichier mz.xml est manquant");
+			} else {
+				xmlDoc = xmlhttp.responseXML;
+				if (xmlDoc != null) {
+					tagObj = xmlDoc.getElementsByTagName("mz"); // tag "mz" dans fichier XML
+					listMZ = Array.from(tagObj);
+					options = listMZ.map((op, i) => eval(`React.createElement("option", { value: "${i + 1}" }, "${op.attributes[0].nodeValue}")`))
+				}
+			}
+		}
+		setXmlIn(false); // le fichier est lu une fois lors d'une session mapguide ou si le fichier n'est pas trouvé alors affichage d'un message
+	}
 
 	const mzChangeHandler = (e: React.ChangeEvent<any>) => {
 		e.preventDefault();
@@ -112,14 +116,9 @@ export const SelectMultiZones = (props: any) => {
 		viewer.getLayerSetGroup(props.mapName).scratchLayer.values_.source.clear();
 		//viewer.getLayerSetGroup(props.mapName).scratchLayer.getSource.clear(); non fonctionnel
 
-
-		let zoneData: [number, number, number, number, string, string, string][];
-		let codeEPSG: string;
-		let zone: Zone;
 		let regis = false;
-		let mz: string = e.target[e.target.value].label;
-
-		let listEPSG: HTMLCollectionOf<Element>[] = [...tagObj[Number(e.target.value) - 1].getElementsByTagName("epsg")];
+		let listEPSG: Element[] = Array.from(tagObj[Number(e.target.value) - 1].getElementsByTagName("epsg"));
+		//let listEPSG: HTMLCollectionOf<Element>[] = [...tagObj[Number(e.target.value) - 1].getElementsByTagName("epsg")];
 
 
 		listEPSG.map((op: any) => {
@@ -130,7 +129,7 @@ export const SelectMultiZones = (props: any) => {
 			let zone: string = op.childNodes[9].textContent;
 			let proj4_defs: string = op.childNodes[11].textContent;
 			let epsg: string = op.attributes["code"].nodeValue;
-			new Zone(xmin, ymin, xmax, ymax, props.mapProj, epsg, zone).draw(viewer.getLayerSetGroup(props.mapName).scratchLayer, style);
+			new Zone(xmin, ymin, xmax, ymax, props.mapProj, epsg, zone).draw(viewer.getLayerSetGroup(props.mapName).scratchLayer, styleMZ);
 			if (!proj4.defs[epsg]) {
 				proj4.defs(epsg, proj4_defs);
 				regis = true;
@@ -149,7 +148,6 @@ export const SelectMultiZones = (props: any) => {
 		<select className="selMZ" id="multi_zones_names" value={props.mz} onChange={mzChangeHandler}>
 			<option value="0">Choose a multi zones...</option>
 			{options}
-
 		</select>
 	</div>;
 };
