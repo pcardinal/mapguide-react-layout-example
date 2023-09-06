@@ -63,12 +63,15 @@ const MultiZonesComponent = (props: unknown) => {
         });
     }
 
+    // event pour afficher le numéro de la zone balayée par la souris
     const onZoomToMZ = () => {
         if (mz !== "0") {
             let layerExtent = viewer.getLayerSetGroup(mapName).scratchLayer.values_.source.getExtent();
             viewer.getLayerSetGroup(mapName).getView().fit(layerExtent);
         }
     }
+
+
 
     return <div>
         <SelectMultiZones mz={mz} mapProj={mapProj} mapName={mapName} onNewMZ={onNewMultiZonesHandler} />

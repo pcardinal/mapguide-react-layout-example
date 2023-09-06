@@ -177,9 +177,8 @@ module.exports = {
         rules: rules
     },
     optimization: {
-/*			 minimize: false */
-
-        splitChunks: {
+			 minimize: false
+/*        splitChunks: {
             name: false,
             cacheGroups: {
                 default: false,
@@ -190,6 +189,6 @@ module.exports = {
                 }
             }
         }
-
+*/
     }
 };

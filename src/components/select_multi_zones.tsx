@@ -56,16 +56,14 @@ class Zone {
 		});
 
 
-		// EPSG de base utilisé pou l'ensemble des multizones
+		// EPSG de base utilisé pour l'ensemble des multizones (les limites des zones sont basées sur WGS84)
 		if (!(this.mapProj == "EPSG:4326")) {
 			feature.getGeometry()?.transform("EPSG:4326", this.mapProj);
-			//feature.values_.geometry.transform("EPSG:4326", this.mapProj);
 		}
 
 		feature.set("idZone", this.zone); // feature.get("idZone") 
 		feature.setId(this.codeEPSG);
 		feature.setStyle(style);
-		//couche.values_.source.addFeature(feature);
 		couche.getSource()?.addFeature(feature);
 	}
 
@@ -130,8 +128,8 @@ export const SelectMultiZones = (props: any) => {
 			let proj4_defs: string = op.childNodes[11].textContent;
 			let epsg: string = op.attributes["code"].nodeValue;
 			new Zone(xmin, ymin, xmax, ymax, props.mapProj, epsg, zone).draw(viewer.getLayerSetGroup(props.mapName).scratchLayer, styleMZ);
-			if (!proj4.defs[epsg]) {
-				proj4.defs(epsg, proj4_defs);
+			if (!proj4.defs["EPSG:" + epsg]) {
+				proj4.defs("EPSG:" + epsg, proj4_defs);
 				regis = true;
 			}
 
