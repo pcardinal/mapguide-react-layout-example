@@ -1,12 +1,12 @@
 # multizones (mapguide-react-layout-example)
 
-Ce composant permet d'afficher les zones d'une région du monde et les coordonnées de la souris relatives à une zone pointée. Il est ajouté à mapguide-react-layout-example utilitisant le module du visualisateur mapguide-react-layout.
+This component allows you to display the areas of a region of the world and the mouse coordinates relating to a pointed area. It is added to mapguide-react-layout-example using the mapguide-react-layout viewer module.
 
 ![image](https://github.com/pcardinal/multizones/assets/30451003/297ccf6b-2f0c-4262-8a35-d7037bffd567)
 
 
-- Les données des zones proviennents du site [https://spatialreference.org/](https://epsg.org/home.html)
-- Les données nécessaires à la définition des projections proviennet du site [https://epsg.io/](https://epsg.io/)
+- The zone data comes from the site [https://epsg.org/](https://epsg.org/home.html)
+- The data necessary to define the projections comes from the site [https://epsg.io/](https://epsg.io/)
 
 
 
@@ -14,15 +14,7 @@ Ce composant permet d'afficher les zones d'une région du monde et les coordonn�
 
 This repo contains an example of a customized [mapguide-react-layout](https://github.com/jumpinjackie/mapguide-react-layout) viewer bundle.
 
-This custom viewer bundle uses the [mapguide-react-layout npm module](https://www.npmjs.com/package/mapguide-react-layout) and demonstrates:
-
- * Custom script commands
- * Custom viewer templates
- * Custom components
- * Custom application state
-   * Custom state branch
-   * Custom state reducer function (and registration)
-   * UI that subscribes and manipulates this custom application state through standard redux APIs
+This custom viewer bundle uses the [mapguide-react-layout npm module](https://www.npmjs.com/package/mapguide-react-layout) 
 
 ## Requirements
 
