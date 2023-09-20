@@ -1,5 +1,7 @@
 'use strict';
 
+
+
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -146,9 +148,21 @@ const rules = [
         loader: 'ts-loader',
         exclude: /(node_modules|test-utils|\.test\.ts$)/
     }
+		
 ];
 
+/*
+module.exports = function override(config, env) {
+  console.log("React app rewired works!")
+  config.resolve.fallback = {
+    fs: false
+  };
+  return config;
+};
+*/
+
 module.exports = {
+	
     mode: (process.env.BUILD_MODE === 'development' ? 'development' : 'production'),
     entry: {
         viewer: {
@@ -166,6 +180,13 @@ module.exports = {
         chunkFilename: '[id].chunk.js'
     },
     resolve: {
+			/*
+     fallback: {
+        // 👇️👇️👇️ add this 👇️👇️👇️
+        "fs": false,
+        "os": false,
+        "path": false,
+      },*/
         alias: {},
         modules: [
             'node_modules'

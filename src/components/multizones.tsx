@@ -12,6 +12,7 @@ import './multizones.css';
 export interface IMultiZonesComponentOwnProps { }
 export interface IMultiZonesComponentProps { }
 export interface IMultiZonesComponentDispatch { }
+import { useRef } from 'react';
 
 export type MultiZonesComponentProps = Partial<IMultiZonesComponentOwnProps> & Partial<IMultiZonesComponentProps> & Partial<IMultiZonesComponentDispatch>;
 
@@ -25,6 +26,31 @@ function mapStateToProps(state: Readonly<IApplicationState>): Partial<IMultiZone
     }
 }
 
+const memoryState :any = {};
+
+
+function useMemoryState(key: any, initialState : any) {
+  const [state, setState] = React.useState(() => {
+    const hasMemoryValue = Object.prototype.hasOwnProperty.call(memoryState, key);
+    if (hasMemoryValue) {
+      return memoryState[key]
+    } else {
+      return typeof initialState === 'function' ? initialState() : initialState;
+    }
+  });
+
+  function onChange(nextState:any) {
+    memoryState [key] = nextState;
+    setState(nextState);
+  }
+
+  return [state, onChange];
+}
+
+
+
+//const [todos, setTodos] = useMemoryState('todos', ['Buy milk']);
+
 
 const MultiZonesComponent = (props: unknown) => {
 
@@ -33,20 +59,29 @@ const MultiZonesComponent = (props: unknown) => {
     let mapName = "";
     let activeMapName = useActiveMapName();
     if (typeof activeMapName == "string") { mapName = activeMapName }
+
     if (((window as any)[mapName]) !== mz) {
         if ((window as any)[mapName] == undefined) (window as any)[mapName] = "0";
         setMZ((window as any)[mapName]);
     }
 
+
+    const [todos, setTodos] = useMemoryState(mapName, [mz]);
+ 
+
+    
+
     const onNewMultiZonesHandler = (mz: string) => {
         setMZ(mz);
+       //actmap[mapName] = useRef(mz);
         (window as any)[mapName] = mz;
     }
-
-    let mapProj: string | undefined = useActiveMapProjection();  //projection de la carte active   
     let proj = "";
+    
+    let mapProj: string | undefined = useActiveMapProjection();  //projection de la carte active   
+    /*
     if (mapProj) { proj = mapProj }
-
+*/
     const mouseXY: Coordinate2D | undefined = useCurrentMouseCoordinates();
     let zone = "";
 
@@ -58,7 +93,7 @@ const MultiZonesComponent = (props: unknown) => {
         let pix: [number, number] = viewer._map.getPixelFromCoordinate(mouseXY); // pixel du feature sous la souris
         viewer._map.forEachFeatureAtPixel(pix, function (feature: Feature) {
             let proj_feature = feature.getId();
-            if (typeof proj_feature == "string") { proj = "EPSG:" + proj_feature }
+            if (typeof proj_feature == "string") {  proj = "EPSG:" + proj_feature }
             zone = feature.get("idZone");
         });
     }
@@ -71,11 +106,16 @@ const MultiZonesComponent = (props: unknown) => {
         }
     }
 
-
-
+    //proj = proj + "EPSG:4326";    
+    //<CoordinateTrackerContainer projections="EPSG:4326" />
+    //<CoordinateTrackerContainer projections={[proj]} />
+    //<CoordinateTrackerContainer projections={[proj , "EPSG:4326" ]} />
+    
     return <div>
         <SelectMultiZones mz={mz} mapProj={mapProj} mapName={mapName} onNewMZ={onNewMultiZonesHandler} />
-        <CoordinateTrackerContainer projections={[proj]} />
+        <CoordinateTrackerContainer projections={[proj , "EPSG:4326" ]} />
+
+    
         <NumeroZone zone={zone} />
         <button className="zoomToMZ" onClick={onZoomToMZ}>ZoomToMZ</button>
     </div>;

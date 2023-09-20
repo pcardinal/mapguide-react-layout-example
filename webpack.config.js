@@ -166,6 +166,9 @@ module.exports = {
         chunkFilename: '[id].chunk.js'
     },
     resolve: {
+        fallback: {
+            "fs": false
+        },
         alias: {},
         modules: [
             'node_modules'
